@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Serilog;
+using Serilog.Formatting.Compact;
 
 namespace ProjectUsingLibraryViewer
 {
@@ -13,5 +15,14 @@ namespace ProjectUsingLibraryViewer
     /// </summary>
     public partial class App : Application
     {
+        /// <inheritdoc />
+        public App()
+        {
+            var log = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File(new CompactJsonFormatter(), @"..\log\log-.txt",
+                    rollingInterval: RollingInterval.Day,
+                    rollOnFileSizeLimit: true).CreateLogger();
+        }
     }
 }

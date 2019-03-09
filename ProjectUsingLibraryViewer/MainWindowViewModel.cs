@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
 using Microsoft.Win32;
 using Reactive.Bindings;
 
