@@ -1,6 +1,8 @@
 # ProjectUsingLibraryViewer
 C#のプロジェクトに使われているプロジェクトのライブラリを取得するツールです。（作成中）
 
+![スクリーンショット](https://github.com/rimever/ProjectUsingLibraryViewer/blob/master/ScreenShots/ScreenShot.png "スクリーンショット")
+
 ## 使用ライブラリ
 
 * .NETFramework 4.6.1
