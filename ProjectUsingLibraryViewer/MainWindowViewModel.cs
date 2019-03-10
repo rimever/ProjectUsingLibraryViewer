@@ -39,6 +39,8 @@ public ReactiveCommand CopyMarkdownCommand { get; set; }
         /// </summary>
         public ReactiveProperty<string> ProjectSummary { get; set; }
 
+        public ReactiveProperty<Visibility> SummaryVisibility { get; set; }
+
         /// <inheritdoc />
         public MainWindowViewModel(Window owner)
         {
@@ -61,6 +63,9 @@ public ReactiveCommand CopyMarkdownCommand { get; set; }
             CopyMarkdownCommand = new ReactiveCommand();
             CopyMarkdownCommand.Subscribe(_ => { Clipboard.SetText(ProjectSummary.Value); });
             ProjectSummary = ProjectFilePath.Select(GetProjectSummary).ToReactiveProperty();
+            SummaryVisibility = ProjectFilePath
+                .Select(p => ValidateProjectFilePath(p).Item1 ? Visibility.Visible : Visibility.Hidden)
+                .ToReactiveProperty();
         }
 
         private string GetProjectSummary(string path)

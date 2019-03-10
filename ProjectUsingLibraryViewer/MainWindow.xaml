@@ -49,10 +49,10 @@
         <Grid Row="2" Column="1" ColumnSpan="2">
             <TextBlock Style="{DynamicResource MaterialDesignBody1TextBlock}" Text="{Binding ProjectFilePathValidation.Value}" />
         </Grid>
-        <Grid Row="4" Column="1">
+        <Grid Row="4" Column="1" Visibility="{Binding SummaryVisibility.Value}">
             <TextBlock Style="{DynamicResource MaterialDesignBody1TextBlock}" Text="使用ライブラリ" />
         </Grid>
-        <Grid Row="4" Column="2">
+        <Grid Row="4" Column="2" Visibility="{Binding SummaryVisibility.Value}">
             <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                     Command="{Binding CopyMarkdownCommand}"
                     ToolTip="コピー"
@@ -65,7 +65,7 @@
                 </Viewbox>
             </Button>
         </Grid>
-        <Grid Row="5" Column="1" ColumnSpan="3">
+        <Grid Row="5" Column="1" ColumnSpan="3" Visibility="{Binding SummaryVisibility.Value}">
             <TextBox TextWrapping="Wrap"
                      AcceptsReturn="True"
                      VerticalAlignment="Top"
