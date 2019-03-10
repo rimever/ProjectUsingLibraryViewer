@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Packaging;
 using System.Reactive.Linq;
 using System.Windows;
 using Microsoft.Win32;
+using ProjectUsingLibraryViewer.Utilities;
 using Reactive.Bindings;
 
 namespace ProjectUsingLibraryViewer
@@ -27,6 +29,10 @@ namespace ProjectUsingLibraryViewer
         /// プロジェクト選択処理
         /// </summary>
         public ReactiveCommand SelectProjectCommand { get; set; }
+        /// <summary>
+        /// クリップボードにコピーする処理
+        /// </summary>
+public ReactiveCommand CopyMarkdownCommand { get; set; }
 
         /// <summary>
         /// プロジェクトの使用ライブラリサマリ
@@ -52,7 +58,9 @@ namespace ProjectUsingLibraryViewer
                     ProjectFilePath.Value = dialog.FileName;
                 }
             });
-            ProjectSummary = ProjectFilePath.Select(path => GetProjectSummary(path)).ToReactiveProperty();
+            CopyMarkdownCommand = new ReactiveCommand();
+            CopyMarkdownCommand.Subscribe(_ => { Clipboard.SetText(ProjectSummary.Value); });
+            ProjectSummary = ProjectFilePath.Select(GetProjectSummary).ToReactiveProperty();
         }
 
         private string GetProjectSummary(string path)
@@ -64,12 +72,23 @@ namespace ProjectUsingLibraryViewer
 
             return "* " + string.Join(Environment.NewLine + "* ", EnumerableUsingLibrary(path));
         }
-
+        /// <summary>
+        /// 使用ライブラリ情報を列挙します
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private IEnumerable<string> EnumerableUsingLibrary(string path)
         {
-            //TODO:SDK Versionを取得
-            //TODO:package.configからライブラリとバージョンを取得
-            yield break;
+            yield return ProjectFileUtility.GetTargetFramework(path);
+            var fileInfo = new FileInfo(path);
+            if (fileInfo.Directory?.Exists == true)
+            {
+                string packagePath = Path.Combine(fileInfo.Directory.FullName, "packages.config");
+                foreach (var package in ProjectFileUtility.EnumerablePackageLibrary(packagePath))
+                {
+                    yield return $"{package.Name} {package.Version}";
+                }
+            }
         }
 
         private Tuple<bool,string> ValidateProjectFilePath(string path)
