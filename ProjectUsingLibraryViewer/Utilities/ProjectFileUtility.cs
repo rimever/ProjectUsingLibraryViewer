@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿#region
+
+using System;
 using System.Collections.Generic;
-using System.Windows.Forms.VisualStyles;
 using System.Xml;
 using Microsoft.Build.Evaluation;
+
+#endregion
 
 namespace ProjectUsingLibraryViewer.Utilities
 {
@@ -26,6 +28,7 @@ namespace ProjectUsingLibraryViewer.Utilities
             {
                 return netCoreVersion.Replace("netcoreapp", ".NETCore ");
             }
+
             var project = new Project(projectFilePath);
             foreach (var group in project.Xml.PropertyGroups)
             {
@@ -33,8 +36,8 @@ namespace ProjectUsingLibraryViewer.Utilities
                 {
                     if (propertyElement.Name == "TargetFrameworkVersion")
                     {
-                        return propertyElement.Value.Replace("v",".NETFramework ");
-                    }   
+                        return propertyElement.Value.Replace("v", ".NETFramework ");
+                    }
                 }
             }
 
@@ -53,7 +56,7 @@ namespace ProjectUsingLibraryViewer.Utilities
             foreach (XmlNode node in xml.SelectNodes("packages/package"))
             {
                 XmlElement xmlElement = (XmlElement) node;
-                yield return new PackageLibrary()
+                yield return new PackageLibrary
                 {
                     Name = xmlElement.GetAttribute("id"),
                     Version = xmlElement.GetAttribute("version")
@@ -71,6 +74,7 @@ namespace ProjectUsingLibraryViewer.Utilities
         /// 名前
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// バージョン
         /// </summary>

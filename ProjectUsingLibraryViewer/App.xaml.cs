@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#region
+
 using System.Windows;
 using Serilog;
 using Serilog.Formatting.Compact;
+
+#endregion
 
 namespace ProjectUsingLibraryViewer
 {

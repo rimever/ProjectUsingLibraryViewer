@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProjectFileUtilityTest.cs" />
+    <Compile Include="Utilities\ProjectFileUtilityTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +63,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="TestData\Utilities\ProjectUtility\EnumerableProject\ProjectUsingLibraryViewer.sln" />
     <Content Include="TestData\Utilities\ProjectUtility\GetTargetFramework\NetCore.csproj">
       <SubType>Designer</SubType>
     </Content>

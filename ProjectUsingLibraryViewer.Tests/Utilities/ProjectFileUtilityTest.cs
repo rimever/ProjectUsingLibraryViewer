@@ -1,14 +1,16 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using NUnit.Framework;
 using ProjectUsingLibraryViewer.Utilities;
 
-namespace ProjectUsingLibraryViewer.Tests
+#endregion
+
+namespace ProjectUsingLibraryViewer.Tests.Utilities
 {
     /// <summary>
     /// <see cref="ProjectFileUtility"/>をテストするクラスです。
@@ -31,21 +33,27 @@ namespace ProjectUsingLibraryViewer.Tests
         /// <returns></returns>
         public static IEnumerable<TestCaseData> GetTargetFrameworkTestCaseSource()
         {
-            string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"../..","TestData","Utilities","ProjectUtility","GetTargetFramework");
+            string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../..", "TestData", "Utilities",
+                "ProjectUtility", "GetTargetFramework");
             yield return new TestCaseData(Path.Combine(directoryPath, "NetCore.csproj")).Returns(".NETCore 2.1");
-            yield return new TestCaseData(Path.Combine(directoryPath, "NetFramework.csproj")).Returns(".NETFramework 4.6.1");
+            yield return new TestCaseData(Path.Combine(directoryPath, "NetFramework.csproj")).Returns(
+                ".NETFramework 4.6.1");
         }
+
         [Test]
         public void EnumerablePackageLibrary()
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"../..","TestData","Utilities","ProjectUtility","EnumerablePackageLibrary","packages.config");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../..", "TestData", "Utilities",
+                "ProjectUtility", "EnumerablePackageLibrary", "packages.config");
             var packages = ProjectFileUtility.EnumerablePackageLibrary(path).ToList();
             Assert.AreEqual(packages.Count, 4);
         }
+
         [Test]
         public void Test()
         {
-            string projectFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"../..","TestData","Utilities","ProjectUtility","NetCore.csproj");
+            string projectFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../..", "TestData",
+                "Utilities", "ProjectUtility", "NetCore.csproj");
             var version = GetVersion(projectFilePath);
             Console.WriteLine(version);
         }

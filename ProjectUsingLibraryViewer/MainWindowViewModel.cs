@@ -1,46 +1,24 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Packaging;
 using System.Reactive.Linq;
+using System.Text;
 using System.Windows;
 using Microsoft.Win32;
 using ProjectUsingLibraryViewer.Utilities;
 using Reactive.Bindings;
 
+#endregion
+
 namespace ProjectUsingLibraryViewer
 {
     /// <summary>
-    /// <see cref="MainWindow"/>‚ÌViewModel‚Å‚·B
+    /// <see cref="MainWindow"/>ã®ViewModelã§ã™ã€‚
     /// </summary>
     public class MainWindowViewModel
     {
-        /// <summary>
-        /// ƒvƒƒWƒFƒNƒgƒtƒ@ƒCƒ‹ƒpƒX
-        /// </summary>
-        public ReactiveProperty<string> ProjectFilePath { get; set; }
-
-        /// <summary>
-        /// <see cref="ProjectFilePath"/>‚ÌŒŸØŒ‹‰Ê
-        /// </summary>
-        public ReactiveProperty<string> ProjectFilePathValidation { get; set; }
-
-        /// <summary>
-        /// ƒvƒƒWƒFƒNƒg‘I‘ğˆ—
-        /// </summary>
-        public ReactiveCommand SelectProjectCommand { get; set; }
-        /// <summary>
-        /// ƒNƒŠƒbƒvƒ{[ƒh‚ÉƒRƒs[‚·‚éˆ—
-        /// </summary>
-public ReactiveCommand CopyMarkdownCommand { get; set; }
-
-        /// <summary>
-        /// ƒvƒƒWƒFƒNƒg‚Ìg—pƒ‰ƒCƒuƒ‰ƒŠƒTƒ}ƒŠ
-        /// </summary>
-        public ReactiveProperty<string> ProjectSummary { get; set; }
-
-        public ReactiveProperty<Visibility> SummaryVisibility { get; set; }
-
         /// <inheritdoc />
         public MainWindowViewModel(Window owner)
         {
@@ -50,10 +28,10 @@ public ReactiveCommand CopyMarkdownCommand { get; set; }
             SelectProjectCommand = new ReactiveCommand();
             SelectProjectCommand.Subscribe(_ =>
             {
-                var dialog = new OpenFileDialog()
+                var dialog = new OpenFileDialog
                 {
                     DefaultExt = "*.csproj",
-                    Filter = "ƒvƒƒWƒFƒNƒgƒtƒ@ƒCƒ‹(*.csproj)|*.csproj"
+                    Filter = "ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«(*.sln)|*.sln"
                 };
                 if (dialog.ShowDialog(owner) == true)
                 {
@@ -68,6 +46,41 @@ public ReactiveCommand CopyMarkdownCommand { get; set; }
                 .ToReactiveProperty();
         }
 
+        /// <summary>
+        /// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
+        /// </summary>
+        public ReactiveProperty<string> ProjectFilePath { get; set; }
+
+        /// <summary>
+        /// <see cref="ProjectFilePath"/>ã®æ¤œè¨¼çµæœ
+        /// </summary>
+        public ReactiveProperty<string> ProjectFilePathValidation { get; set; }
+
+        /// <summary>
+        /// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆé¸æŠå‡¦ç†
+        /// </summary>
+        public ReactiveCommand SelectProjectCommand { get; set; }
+
+        /// <summary>
+        /// ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã«ã‚³ãƒ”ãƒ¼ã™ã‚‹å‡¦ç†
+        /// </summary>
+        public ReactiveCommand CopyMarkdownCommand { get; set; }
+
+        /// <summary>
+        /// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ä½¿ç”¨ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚µãƒãƒª
+        /// </summary>
+        public ReactiveProperty<string> ProjectSummary { get; set; }
+
+        /// <summary>
+        /// ä½¿ç”¨ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚µãƒãƒªã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¡¨ç¤ºã™ã‚‹ã‹ã‚’å–å¾—ãƒ»è¨­å®šã—ã¾ã™ã€‚
+        /// </summary>
+        public ReactiveProperty<Visibility> SummaryVisibility { get; set; }
+
+        /// <summary>
+        /// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚µãƒãƒªã‚’å–å¾—ãƒ»è¨­å®šã—ã¾ã™ã€‚
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private string GetProjectSummary(string path)
         {
             if (!File.Exists(path))
@@ -75,10 +88,46 @@ public ReactiveCommand CopyMarkdownCommand { get; set; }
                 return string.Empty;
             }
 
+            FileInfo fileInfo = new FileInfo(path);
+            if (fileInfo.Extension == ".sln")
+            {
+                return "* " + string.Join(Environment.NewLine + "* ", EnumerableUsingLibraryOnSolutionFile(fileInfo));
+            }
+
             return "* " + string.Join(Environment.NewLine + "* ", EnumerableUsingLibrary(path));
         }
+
+        private IEnumerable<string> EnumerableUsingLibraryOnSolutionFile(FileInfo fileInfo)
+        {
+            if (fileInfo.Directory == null)
+            {
+                yield break;
+            }
+
+            using (var stream = new StreamReader(fileInfo.FullName, Encoding.UTF8))
+            {
+                while (!stream.EndOfStream)
+                {
+                    string line = stream.ReadLine();
+                    if (line != null && line.StartsWith("Project("))
+                    {
+                        var data = line.Split(',');
+                        if (data.Length >= 2)
+                        {
+                            string projectFilePath = Path.Combine(fileInfo.Directory.FullName,
+                                data[1].Trim().Replace(@"""", string.Empty));
+                            foreach (var text in EnumerableUsingLibrary(projectFilePath))
+                            {
+                                yield return text;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
-        /// g—pƒ‰ƒCƒuƒ‰ƒŠî•ñ‚ğ—ñ‹“‚µ‚Ü‚·
+        /// ä½¿ç”¨ãƒ©ã‚¤ãƒ–ãƒ©ãƒªæƒ…å ±ã‚’åˆ—æŒ™ã—ã¾ã™
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -96,16 +145,16 @@ public ReactiveCommand CopyMarkdownCommand { get; set; }
             }
         }
 
-        private Tuple<bool,string> ValidateProjectFilePath(string path)
+        private Tuple<bool, string> ValidateProjectFilePath(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                return new Tuple<bool, string>(false, "ƒvƒƒWƒFƒNƒgƒtƒ@ƒCƒ‹–¼‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢B");
+                return new Tuple<bool, string>(false, "ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ•ã‚¡ã‚¤ãƒ«åã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚");
             }
 
             if (!File.Exists(path))
             {
-                return new Tuple<bool, string>(false, "w’è‚³‚ê‚½ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB");
+                return new Tuple<bool, string>(false, "æŒ‡å®šã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
             }
 
             return new Tuple<bool, string>(true, string.Empty);
