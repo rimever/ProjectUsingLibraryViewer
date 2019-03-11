@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ProjectUsingLibraryViewer"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModels="clr-namespace:ProjectUsingLibraryViewer.ViewModels"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -13,7 +13,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance {x:Type local:MainWindowViewModel}}"
+        d:DataContext="{d:DesignInstance {x:Type viewModels:MainWindowViewModel}}"
         Title="使用ライブラリ取得ツール" Height="480" Width="640">
     <Grid>
         <Grid.RowDefinitions>
@@ -32,7 +32,7 @@
             <ColumnDefinition Width="32"/>
         </Grid.ColumnDefinitions>
         <Grid Row="1" Column="1" ColumnSpan="2">
-            <TextBox Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding ProjectFilePath.Value, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="プロジェクトファイルパス(*.csproj)" />
+            <TextBox Name="TextBlockFilePath" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding ProjectFilePath.Value, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="プロジェクト/ソリューション(*.csproj/*.sln)" />
         </Grid>
         <Grid Row="1" Column="3">
             <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
@@ -47,7 +47,8 @@
             </Button>
         </Grid>
         <Grid Row="2" Column="1" ColumnSpan="2">
-            <TextBlock Style="{DynamicResource MaterialDesignBody1TextBlock}" Text="{Binding ProjectFilePathValidation.Value}" />
+            <TextBlock Style="{DynamicResource MaterialDesignBody1TextBlock}" Text="{Binding ProjectFilePathValidation.Value}" 
+                       />
         </Grid>
         <Grid Row="4" Column="1" Visibility="{Binding SummaryVisibility.Value}">
             <TextBlock Style="{DynamicResource MaterialDesignBody1TextBlock}" Text="使用ライブラリ" />

@@ -12,7 +12,7 @@ using Reactive.Bindings;
 
 #endregion
 
-namespace ProjectUsingLibraryViewer
+namespace ProjectUsingLibraryViewer.ViewModels
 {
     /// <summary>
     /// <see cref="MainWindow"/>のViewModelです。
@@ -44,7 +44,14 @@ namespace ProjectUsingLibraryViewer
             SummaryVisibility = ProjectFilePath
                 .Select(p => ValidateProjectFilePath(p).Item1 ? Visibility.Visible : Visibility.Hidden)
                 .ToReactiveProperty();
+            ProjectFilePathDragOver = new ReactiveCommand<DragEventHandler>();
+            ProjectFilePathDragOver.Subscribe(handler =>
+            {
+                var test = handler.Method;
+            });
         }
+
+        public ReactiveCommand<DragEventHandler> ProjectFilePathDragOver { get; set; }
 
         /// <summary>
         /// プロジェクトファイルパス
