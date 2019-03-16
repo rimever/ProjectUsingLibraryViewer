@@ -13,6 +13,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
+        Icon="Resources/notebook.ico"
         d:DataContext="{d:DesignInstance {x:Type viewModels:MainWindowViewModel}}"
         Title="使用ライブラリ取得ツール" Height="480" Width="640">
     <Grid>
